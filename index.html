@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#111111" />
   <meta name="description" content="모바일 초대장" />
 
-  <!-- ✅ 공유용(카톡/메신저) 미리보기: 실제 배포 후 URL/이미지로 교체 -->
   <meta property="og:title" content="초대합니다" />
   <meta property="og:description" content="일시/장소를 확인해 주세요" />
   <meta property="og:image" content="https://example.com/og-image.jpg" />
@@ -71,7 +70,7 @@
       aspect-ratio: 16/10;
       background:
         linear-gradient(120deg, rgba(124,92,255,.65), rgba(35,196,131,.45)),
-        url("https://images.unsplash.com/photo-1523437237164-d442d57cc3c9?auto=format&fit=crop&w=1400&q=70");
+        url("cover.jpg");
       background-size:cover;
       background-position:center;
     }
@@ -185,9 +184,6 @@
       background: linear-gradient(135deg, rgba(35,196,131,.92), rgba(35,196,131,.55));
       border-color: rgba(35,196,131,.5);
     }
-    .btn.ghost{
-      background: rgba(255,255,255,.02);
-    }
 
     .divider{
       height:1px;
@@ -200,26 +196,6 @@
       color: var(--muted);
       font-size: 13px;
       line-height:1.6;
-    }
-
-    .gallery{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .photo{
-      border-radius: 18px;
-      overflow:hidden;
-      border:1px solid var(--line);
-      background:#111;
-      aspect-ratio: 1 / 1;
-    }
-    .photo img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      transform: scale(1.02);
     }
 
     .footer{
@@ -252,17 +228,129 @@
       transform: translateX(-50%) translateY(-4px);
     }
 
-    /* 작은 화면 최적화 */
     @media (max-width: 360px){
       h1{ font-size: 24px; }
       .meta{ grid-template-columns: 78px 1fr; }
+    }
+
+    /* --- Form / List (재사용) --- */
+    .guestForm{
+      display:grid;
+      gap:10px;
+      margin-top: 10px;
+    }
+
+    .input, .textarea{
+      width:100%;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      padding: 12px 12px;
+      outline:none;
+    }
+
+    .textarea{
+      min-height: 92px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .guestList{
+      margin-top: 12px;
+      display:grid;
+      gap:10px;
+    }
+
+    .guestItem{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.03);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .guestTop{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:baseline;
+      margin-bottom: 6px;
+    }
+
+    .guestName{
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .guestTime{
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .guestMsg{
+      color: var(--text);
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    /* --- RSVP UI --- */
+    .rsvpRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+
+    .rsvpBtn{
+      flex: 1 1 90px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      cursor:pointer;
+      transition: transform .08s ease, background .18s ease, border-color .18s ease;
+    }
+
+    .rsvpBtn:active{ transform: translateY(1px) scale(.99); }
+
+    .rsvpBtn.active{
+      background: linear-gradient(135deg, rgba(124,92,255,.92), rgba(124,92,255,.55));
+      border-color: rgba(124,92,255,.55);
+    }
+
+    .statusBadge{
+      display:inline-flex;
+      align-items:center;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(0,0,0,.25);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .statusBadge.attend{
+      border-color: rgba(35,196,131,.45);
+      color: rgba(35,196,131,.95);
+    }
+
+    .statusBadge.maybe{
+      border-color: rgba(124,92,255,.45);
+      color: rgba(124,92,255,.95);
+    }
+
+    .statusBadge.decline{
+      border-color: rgba(255,255,255,.18);
+      color: rgba(255,255,255,.82);
     }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <!-- HERO -->
     <section class="hero" aria-label="초대장 헤더">
       <div class="cover" role="img" aria-label="커버 이미지"></div>
       <div class="heroContent">
@@ -271,56 +359,38 @@
           <span id="badgeText">초대합니다</span>
         </div>
 
-        <!-- ✅ 타이틀/한줄소개 -->
-        <h1 id="title">우리의 특별한 날에 초대합니다</h1>
-        <p class="subtitle" id="subtitle">
-          소중한 분들과 함께하는 시간을 나누고 싶습니다.<br />
-          아래 일시와 장소를 확인해 주세요.
-        </p>
-
-        <div class="btnRow">
-          <a class="btn primary" href="#info">일정 확인</a>
-          <button class="btn ghost" id="btnCopyLink" type="button">링크 복사</button>
-        </div>
+        <h1 id="title">munkwon & hyeran 청첩장모임</h1>
+        <p class="subtitle" id="subtitle"></p>
       </div>
     </section>
 
     <div class="grid">
-      <!-- INFO -->
       <section id="info" class="card" aria-label="행사 정보">
         <h2 class="sectionTitle">행사 정보</h2>
 
         <div class="meta" aria-label="상세 정보">
           <div class="k">행사명</div>
-          <div class="v" id="eventName">OO의 초대</div>
+          <div class="v" id="eventName">문권혜란청모</div>
 
           <div class="k">일시</div>
-          <div class="v" id="eventDateText">2026년 3월 14일(토) 오후 2:00</div>
+          <div class="v" id="eventDateText">2026년 2월 14일(토) 오후 5:00부터</div>
 
           <div class="k">장소</div>
           <div class="v">
-            <div id="eventPlace">OO컨벤션 3층 라일락홀</div>
-            <div class="note" id="eventAddress">서울특별시 OO구 OO로 123</div>
+            <div id="eventPlace">북삼농막</div>
+            <div class="note" id="eventAddress">경북 칠곡군 북삼읍 강진1길 69</div>
           </div>
 
           <div class="k">드레스코드</div>
-          <div class="v" id="dressCode">자유(편하게)</div>
+          <div class="v" id="dressCode">white & black</div>
         </div>
-
-        <div class="divider"></div>
-
-        <div class="btnRow">
-          <button class="btn success" id="btnAddCalendar" type="button">캘린더 추가</button>
-          <button class="btn" id="btnCall" type="button">전화</button>
-          <button class="btn" id="btnSms" type="button">문자</button>
-        </div>
-
-        <p class="note" style="margin-top:10px;">
-          * “전화/문자” 버튼은 모바일에서 바로 실행됩니다.
-        </p>
       </section>
 
-      <!-- MAP / DIRECTIONS -->
+      <section class="card" aria-label="인사말">
+        <h2 class="sectionTitle"></h2>
+        <p class="subtitle" id="message" style="margin:0;"></p>
+      </section>
+
       <section class="card" aria-label="오시는 길">
         <h2 class="sectionTitle">오시는 길</h2>
 
@@ -331,60 +401,42 @@
         <div class="btnRow" style="margin-top:12px;">
           <a class="btn primary" id="btnKakaoMap" target="_blank" rel="noopener">카카오맵</a>
           <a class="btn" id="btnNaverMap" target="_blank" rel="noopener">네이버지도</a>
-          <a class="btn ghost" id="btnGoogleMap" target="_blank" rel="noopener">구글지도</a>
         </div>
 
         <div class="divider"></div>
 
         <div class="meta">
           <div class="k">주차</div>
-          <div class="v" id="parking">건물 지하주차장 2시간 무료</div>
+          <div class="v" id="parking">maybe5대..?</div>
 
           <div class="k">대중교통</div>
-          <div class="v" id="transit">OO역 2번 출구 도보 5분</div>
+          <div class="v" id="transit">Only Taxi</div>
         </div>
       </section>
 
-      <!-- RSVP -->
-      <section class="card" aria-label="참석 여부">
-        <h2 class="sectionTitle">참석 여부</h2>
-        <p class="note">
-          참석 가능 여부를 알려주시면 준비에 큰 도움이 됩니다.
-        </p>
+      <!-- ✅ 참석 여부 및 의견(실시간 공유) -->
+      <section class="card" aria-label="참석 여부 및 의견">
+        <h2 class="sectionTitle">참석 여부 및 의견</h2>
+        <p class="note">이름 / 참석여부 / 의견을 남겨줘 🙂</p>
 
-        <!-- ✅ 여기 RSVP는 “구글폼 링크”로 연결하는 방식(가장 쉬움) -->
-        <div class="btnRow" style="margin-top:12px;">
-          <a class="btn success" id="btnRsvp" target="_blank" rel="noopener">참석 응답하기</a>
-          <button class="btn" id="btnShare" type="button">공유하기</button>
+        <div class="guestForm">
+          <input class="input" id="rsvpName" type="text" maxlength="20" placeholder="이름" />
+
+          <div class="rsvpRow">
+            <button class="rsvpBtn" data-status="ATTEND" type="button">참석</button>
+            <button class="rsvpBtn" data-status="MAYBE" type="button">미정</button>
+            <button class="rsvpBtn" data-status="DECLINE" type="button">불참</button>
+          </div>
+
+          <textarea class="textarea" id="rsvpMsg" maxlength="200" placeholder="의견 / 한마디"></textarea>
+
+          <div class="btnRow" style="margin-top:0;">
+            <button class="btn success" id="rsvpAdd" type="button">댓글 남기기</button>
+            <button class="btn" id="rsvpClear" type="button">내 댓글 지우기</button>
+          </div>
         </div>
 
-        <p class="note" style="margin-top:10px;">
-          * 구글폼 링크만 바꾸면 수집이 자동으로 됩니다.
-        </p>
-      </section>
-
-      <!-- GALLERY -->
-      <section class="card" aria-label="갤러리">
-        <h2 class="sectionTitle">갤러리</h2>
-        <div class="gallery" id="gallery">
-          <!-- ✅ 이미지 URL만 교체 (또는 img 태그를 더 추가) -->
-          <div class="photo"><img alt="갤러리 이미지 1" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=900&q=70"></div>
-          <div class="photo"><img alt="갤러리 이미지 2" src="https://images.unsplash.com/photo-1520962917960-8a5c5b283c4e?auto=format&fit=crop&w=900&q=70"></div>
-          <div class="photo"><img alt="갤러리 이미지 3" src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=900&q=70"></div>
-          <div class="photo"><img alt="갤러리 이미지 4" src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=70"></div>
-        </div>
-        <p class="note" style="margin-top:10px;">
-          * 사진이 많으면 로딩이 느려질 수 있어요(10장 내 추천).
-        </p>
-      </section>
-
-      <!-- MESSAGE -->
-      <section class="card" aria-label="인사말">
-        <h2 class="sectionTitle">인사말</h2>
-        <p class="subtitle" id="message" style="margin:0;">
-          늘 응원해 주셔서 감사드립니다.<br />
-          편하신 마음으로 오셔서 즐거운 시간 함께해요 🙂
-        </p>
+        <div class="guestList" id="rsvpList" aria-label="댓글 목록"></div>
       </section>
 
       <div class="footer">
@@ -395,41 +447,26 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite">복사되었습니다</div>
 
-  <script>
-    /**
-     * ✅ 여기만 바꾸면 초대장 정보 전체가 바뀜
-     */
+  <!-- ✅ Firebase 실시간 스크립트: module 필요 -->
+  <script type="module">
     const INVITE = {
       badgeText: "초대합니다",
       title: "munkwon & hyeran 청첩장모임",
-      subtitle: "북삼친구들~~ party tonight",
-
+      subtitle: "어디에 있어도, 결국 북삼에서 만나는 우리",
       eventName: "문권혜란청모",
-      // ISO 형식 권장 (캘린더 파일 생성용)
-      // 예: 2026-03-14T14:00:00+09:00
-      startISO: "2026-03-14T14:00:00+09:00",
-      endISO:   "2026-03-14T16:00:00+09:00",
-
       dateText: "2026년 2월 14일(토) 오후 5:00부터",
       place: "북삼 농막",
       address: "경북 칠곡군 북삼읍 강진1길 69",
-      dressCode: "자유(편하게)",
-
-      // 길찾기용 좌표 (WGS84)
-      lat: 37.5665,
-      lng: 126.9780,
-
-      parking: "주차 무료 선착순 5대임 maybe"
-      transit: "only TAXI",
-
-      // 연락처 (본인/담당자)
-      phone: "010-9176-1683",
-
-      // ✅ 구글폼(또는 네이버폼) 링크로 교체
-      rsvpUrl: "https://forms.gle/your-google-form-link"
+      dressCode: "white & black",
+      message:
+        "청첩장 모임 겸 그냥 우리 모임!\n" +
+        "오랜만에 다 같이 얼굴 보고\n" +
+        "맛있는 거 먹고 편하게 놀자 😊\n" +
+        "시간 되면 꼭 와 ㅎ.ㅎ",
+      parking: "maybe5대..?",
+      transit: "Only Taxi"
     };
 
-    // ---------- Helpers ----------
     const $ = (id) => document.getElementById(id);
     const toastEl = $("toast");
 
@@ -441,12 +478,11 @@
     }
 
     function nl2br(text){
-      return text.replace(/\n/g, "<br/>");
+      return String(text || "").replace(/\n/g, "<br/>");
     }
-
     function encode(str){ return encodeURIComponent(str); }
 
-    // ---------- Apply data ----------
+    // Apply data
     $("badgeText").textContent = INVITE.badgeText;
     $("title").textContent = INVITE.title;
     $("subtitle").innerHTML = nl2br(INVITE.subtitle);
@@ -459,123 +495,206 @@
     $("parking").textContent = INVITE.parking;
     $("transit").textContent = INVITE.transit;
 
-    $("btnRsvp").href = INVITE.rsvpUrl;
+    $("message").innerHTML = nl2br(INVITE.message);
 
-    // ---------- Map links (no API key) ----------
-    // 카카오맵: https://map.kakao.com/link/map/이름,위도,경도
-    // 네이버지도(길찾기): https://map.naver.com/v5/directions/-/-/위도,경도,place?c=...
-    // 구글지도: https://www.google.com/maps/search/?api=1&query=위도,경도(또는 주소)
-    const kakao = `https://map.kakao.com/link/map/${encode(INVITE.place)},${INVITE.lat},${INVITE.lng}`;
-    const google = `https://www.google.com/maps/search/?api=1&query=${INVITE.lat},${INVITE.lng}`;
-    // 네이버는 UI가 자주 바뀌어서 가장 잘 먹히는 "검색" 링크도 함께 제공
-    const naverSearch = `https://map.naver.com/v5/search/${encode(INVITE.place)}?c=${INVITE.lng},${INVITE.lat},15,0,0,0,dh`;
-    $("btnKakaoMap").href = kakao;
-    $("btnGoogleMap").href = google;
-    $("btnNaverMap").href = naverSearch;
+    // Map links
+    const query = INVITE.address;
+    $("btnKakaoMap").href = `https://map.kakao.com/link/search/${encode(query)}`;
+    $("btnNaverMap").href = `https://map.naver.com/v5/search/${encode(query)}`;
 
-    // ---------- Call / SMS ----------
-    $("btnCall").addEventListener("click", () => {
-      location.href = `tel:${INVITE.phone.replace(/[^0-9+]/g,"")}`;
-    });
-
-    $("btnSms").addEventListener("click", () => {
-      const body = `[초대장]\n${INVITE.title}\n${INVITE.dateText}\n${INVITE.place}\n${INVITE.address}\n\n지도(카카오): ${kakao}\n`;
-      location.href = `sms:${INVITE.phone.replace(/[^0-9+]/g,"")}?body=${encode(body)}`;
-    });
-
-    // ---------- Copy link ----------
-    $("btnCopyLink").addEventListener("click", async () => {
-      try{
-        await navigator.clipboard.writeText(location.href);
-        showToast("링크가 복사됐어요");
-      }catch(e){
-        // fallback
-        const ta = document.createElement("textarea");
-        ta.value = location.href;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-        showToast("링크가 복사됐어요");
-      }
-    });
-
-    // ---------- Share API ----------
-    $("btnShare").addEventListener("click", async () => {
-      const shareData = {
-        title: INVITE.title,
-        text: `${INVITE.dateText}\n${INVITE.place}`,
-        url: location.href
-      };
-      try{
-        if (navigator.share){
-          await navigator.share(shareData);
-        } else {
-          await navigator.clipboard.writeText(location.href);
-          showToast("공유 기능이 없어 링크를 복사했어요");
-        }
-      }catch(e){
-        // user canceled: ignore
-      }
-    });
-
-    // ---------- Calendar (ICS file download) ----------
-    function toICSDate(iso){
-      // iso: 2026-03-14T14:00:00+09:00
-      // ICS는 UTC(Z)로 넣는 게 안정적이라 UTC로 변환
-      const d = new Date(iso);
-      const pad = (n) => String(n).padStart(2,"0");
-      const y = d.getUTCFullYear();
-      const m = pad(d.getUTCMonth()+1);
-      const day = pad(d.getUTCDate());
-      const hh = pad(d.getUTCHours());
-      const mm = pad(d.getUTCMinutes());
-      const ss = pad(d.getUTCSeconds());
-      return `${y}${m}${day}T${hh}${mm}${ss}Z`;
-    }
-
-    function downloadICS(){
-      const dtStart = toICSDate(INVITE.startISO);
-      const dtEnd = toICSDate(INVITE.endISO);
-      const uid = `${Date.now()}@invite.local`;
-      const now = toICSDate(new Date().toISOString());
-
-      const summary = INVITE.eventName;
-      const description = `${INVITE.title}\\n${INVITE.dateText}\\n${INVITE.place}\\n${INVITE.address}`;
-      const locationStr = `${INVITE.place} ${INVITE.address}`;
-
-      const ics =
-`BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//Mobile Invite//KR//EN
-CALSCALE:GREGORIAN
-METHOD:PUBLISH
-BEGIN:VEVENT
-UID:${uid}
-DTSTAMP:${now}
-DTSTART:${dtStart}
-DTEND:${dtEnd}
-SUMMARY:${summary}
-DESCRIPTION:${description}
-LOCATION:${locationStr}
-END:VEVENT
-END:VCALENDAR`;
-
-      const blob = new Blob([ics], {type:"text/calendar;charset=utf-8"});
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "invite.ics";
-      document.body.appendChild(a);
-      a.click();
-      URL.revokeObjectURL(a.href);
-      document.body.removeChild(a);
-      showToast("캘린더 파일을 다운로드했어요");
-    }
-
-    $("btnAddCalendar").addEventListener("click", downloadICS);
-
-    // ---------- Year ----------
+    // Year
     $("year").textContent = new Date().getFullYear();
+
+    // ─────────────────────────────────────────────
+    // Firebase (Firestore + Anonymous Auth) 실시간 댓글
+    // ─────────────────────────────────────────────
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+    import {
+      getFirestore, collection, addDoc, deleteDoc, doc,
+      query as fsQuery, orderBy, onSnapshot, serverTimestamp, where, getDocs
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore.js";
+    import {
+      getAuth, signInAnonymously, onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-auth.js";
+
+    // ✅ 네 프로젝트 firebaseConfig
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6hE6RYcTUPEe7cg3N-9DQ03onYQzT_9U",
+      authDomain: "invitation-comment.firebaseapp.com",
+      projectId: "invitation-comment",
+      storageBucket: "invitation-comment.firebasestorage.app",
+      messagingSenderId: "562450557853",
+      appId: "1:562450557853:web:06d43ad1a289a0bebc1d74",
+      measurementId: "G-H6PE4EEJRP"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+
+    // 이벤트별로 분리 저장(중요)
+    const EVENT_KEY = "munkwon_hyeran_20260214"; // 필요하면 고유값으로 변경
+
+    const STATUS_LABEL = { ATTEND: "참석", DECLINE: "불참" };
+    let selectedStatus = "MAYBE";
+    let myUid = null;
+    let unsub = null;
+
+    function setStatus(status){
+      selectedStatus = status;
+      document.querySelectorAll(".rsvpBtn").forEach(btn => {
+        btn.classList.toggle("active", btn.dataset.status === status);
+      });
+    }
+
+    function fmtTimeFromTs(ts){
+      const d = ts?.toDate ? ts.toDate() : new Date();
+      const pad = (n) => String(n).padStart(2,"0");
+      return `${d.getFullYear()}.${pad(d.getMonth()+1)}.${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function renderList(items){
+      const listEl = $("rsvpList");
+      listEl.innerHTML = "";
+
+      if(items.length === 0){
+        const empty = document.createElement("p");
+        empty.className = "note";
+        empty.style.marginTop = "10px";
+        empty.textContent = "아직 댓글이 없어요. 첫 댓글을 남겨주세요!";
+        listEl.appendChild(empty);
+        return;
+      }
+
+      // 최신이 위로 오게 하려면 reverse 유지
+      items.slice().reverse().forEach(item => {
+        const wrap = document.createElement("div");
+        wrap.className = "guestItem";
+
+        const top = document.createElement("div");
+        top.className = "guestTop";
+
+        const left = document.createElement("div");
+        left.style.display = "flex";
+        left.style.alignItems = "center";
+        left.style.gap = "8px";
+
+        const name = document.createElement("div");
+        name.className = "guestName";
+        name.textContent = item.name || "익명";
+
+        const badge = document.createElement("span");
+        badge.className = "statusBadge " + (
+          item.status === "ATTEND" ? "attend" :
+          item.status === "DECLINE" ? "decline" : "maybe"
+        );
+        badge.textContent = STATUS_LABEL[item.status] || "미정";
+
+        left.appendChild(name);
+        left.appendChild(badge);
+
+        const time = document.createElement("div");
+        time.className = "guestTime";
+        time.textContent = fmtTimeFromTs(item.createdAt);
+
+        top.appendChild(left);
+        top.appendChild(time);
+
+        const msg = document.createElement("div");
+        msg.className = "guestMsg";
+        msg.textContent = item.msg || "";
+
+        wrap.appendChild(top);
+        wrap.appendChild(msg);
+        listEl.appendChild(wrap);
+      });
+    }
+
+    async function addComment(){
+      const nameEl = $("rsvpName");
+      const msgEl = $("rsvpMsg");
+
+      const name = (nameEl.value || "").trim() || "익명";
+      const msg = (msgEl.value || "").trim();
+
+      if(!msg){
+        showToast("의견 적어줘!");
+        return;
+      }
+      if(!myUid){
+        showToast("로그인 중… 다시 눌러줘");
+        return;
+      }
+
+      await addDoc(collection(db, "invites", EVENT_KEY, "comments"), {
+        uid: myUid,
+        name: name.slice(0,20),
+        status: selectedStatus,
+        msg: msg.slice(0,200),
+        createdAt: serverTimestamp()
+      });
+
+      msgEl.value = "";
+      showToast("댓글 남겼어 🙂");
+    }
+
+    async function clearMyComments(){
+      if(!myUid){
+        showToast("로그인 중…");
+        return;
+      }
+      const colRef = collection(db, "invites", EVENT_KEY, "comments");
+      const q = fsQuery(colRef, where("uid", "==", myUid));
+      const snap = await getDocs(q);
+
+      const deletions = [];
+      snap.forEach(d => {
+        deletions.push(deleteDoc(doc(db, "invites", EVENT_KEY, "comments", d.id)));
+      });
+      await Promise.all(deletions);
+
+      showToast("내 댓글을 지웠어");
+    }
+
+    function startRealtime(){
+      const colRef = collection(db, "invites", EVENT_KEY, "comments");
+      const q = fsQuery(colRef, orderBy("createdAt", "asc"));
+
+      if (unsub) unsub();
+      unsub = onSnapshot(q, (snap) => {
+        const items = [];
+        snap.forEach(d => items.push({ id: d.id, ...d.data() }));
+        renderList(items);
+      }, (err) => {
+        console.error(err);
+        showToast("댓글 불러오기 오류");
+      });
+    }
+
+    // 이벤트 바인딩
+    document.querySelectorAll(".rsvpBtn").forEach(btn => {
+      btn.addEventListener("click", () => setStatus(btn.dataset.status));
+    });
+    $("rsvpAdd").addEventListener("click", () => addComment().catch(e => { console.error(e); showToast("저장 실패"); }));
+    $("rsvpClear").addEventListener("click", () => clearMyComments().catch(e => { console.error(e); showToast("삭제 실패"); }));
+
+    // 초기 상태
+    setStatus(selectedStatus);
+
+    // 익명 로그인 + 실시간 시작
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        myUid = user.uid;
+        startRealtime();
+        return;
+      }
+      try{
+        await signInAnonymously(auth);
+      }catch(e){
+        console.error(e);
+        showToast("로그인 실패");
+      }
+    });
   </script>
 </body>
 </html>
